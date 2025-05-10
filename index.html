@@ -5,72 +5,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Friday Fiasco</title>
     <style>
+        /*
+          Friday Fiasco - A fun game about making good (or bad) decisions on a Friday.
+          This game simulates the dilemma of deploying code on a Friday afternoon.
+        */
+
+        /* Root variables for easy theme management */
         :root {
-            --font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive; /* Matches the vibe */
-            --sunny-bg: linear-gradient(135deg, #FFD700, #FFA500); /* Sunny yellow/orange */
-            --sunny-text: #333;
-            --sunny-button-bg: #4CAF50;
-            --sunny-button-hover-bg: #45a049;
-            --chaos-bg: linear-gradient(135deg, #333, #111); /* Dark/chaos */
-            --chaos-text: #FF4136; /* Red for errors */
-            --chaos-button-bg: #8B0000;
-            --chaos-button-hover-bg: #7A0000;
-            --friday-color: #0077cc; /* Color for Friday's text */
+            --font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive; /* Fun, comic-style font */
+            --sunny-bg: linear-gradient(135deg, #FFD700, #FFA500); /* Sunny yellow/orange gradient for normal mode */
+            --sunny-text: #333; /* Dark text for good contrast on sunny background */
+            --sunny-button-bg: #4CAF50; /* Green for positive action buttons */
+            --sunny-button-hover-bg: #45a049; /* Darker green for button hover */
+            --chaos-bg: linear-gradient(135deg, #333, #111); /* Dark gradient for "chaos" mode (bad decisions) */
+            --chaos-text: #FF4136; /* Red text for errors and chaos mode */
+            --chaos-button-bg: #8B0000; /* Dark red for buttons in chaos mode */
+            --chaos-button-hover-bg: #7A0000; /* Darker red for chaos button hover */
+            --friday-color: #0077cc; /* Blue for Friday character's text */
         }
 
+        /* General body styling */
         body {
             font-family: var(--font-family);
             margin: 0;
             padding: 20px;
             text-align: center;
-            transition: background 1s ease-in-out, color 1s ease-in-out;
-            min-height: 100vh;
+            transition: background 1s ease-in-out, color 1s ease-in-out; /* Smooth transitions for theme changes */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--sunny-bg);
+            align-items: center; /* Center content horizontally */
+            justify-content: center; /* Center content vertically */
+            background: var(--sunny-bg); /* Default to sunny theme */
             color: var(--sunny-text);
         }
 
+        /* Main application container */
         .app-container {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            max-width: 600px;
-            width: 90%;
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Soft shadow for depth */
+            max-width: 600px; /* Max width for better readability on large screens */
+            width: 90%; /* Responsive width */
         }
 
+        /* Main heading style */
         h1 {
-            font-size: 2.5em;
+            font-size: 2.5em; /* Large heading */
             margin-bottom: 20px;
         }
 
+        /* Styling for the "Friday" character area */
         .friday-character {
             margin: 20px auto;
             padding: 15px;
-            border: 3px dashed var(--friday-color);
+            border: 3px dashed var(--friday-color); /* Dashed border with Friday's color */
             border-radius: 10px;
-            background-color: #e0f7fa; /* Light blue, suits the beach theme */
-            max-width: 80%;
+            background-color: #e0f7fa; /* Light blue background, like a beach */
+            max-width: 90%; /* Increased max-width to accommodate larger image */
         }
 
-        .friday-character .avatar img { /* Style for the avatar image */
-            max-width: 120px; /* Adjusted for potentially more detailed sloth */
-            height: auto;
+        /* Styling for Friday's avatar image */
+        .friday-character .avatar img {
+            max-width: 200px; /* INCREASED: Made the image larger */
+            height: auto; /* Maintain aspect ratio */
             margin-bottom: 10px;
             /* border-radius: 50%; Optional: if you want a circular avatar */
             /* border: 2px solid var(--friday-color); Optional border for the image itself */
         }
 
+        /* Styling for Friday's dialogue text */
         .friday-character p {
             font-size: 1.2em;
             font-style: italic;
             color: var(--friday-color);
-            min-height: 60px; /* Ensure space for dialogue */
+            min-height: 60px; /* Ensure space for dialogue, prevents layout shifts */
         }
 
+        /* General styling for buttons */
         .choices button, .start-button {
             background-color: var(--sunny-button-bg);
             color: white;
@@ -80,121 +93,129 @@
             border-radius: 8px;
             cursor: pointer;
             margin: 10px;
-            transition: background-color 0.3s ease;
-            font-family: var(--font-family);
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            font-family: var(--font-family); /* Consistent font */
         }
 
         .choices button:hover, .start-button:hover {
-            background-color: var(--sunny-button-hover-bg);
+            background-color: var(--sunny-button-hover-bg); /* Darken on hover */
         }
 
+        /* Area for displaying game messages (success/error) */
         .message-area {
             margin-top: 20px;
             padding: 15px;
             border-radius: 8px;
             font-size: 1.1em;
-            min-height: 50px;
+            min-height: 50px; /* Ensure space for messages */
         }
 
+        /* Styling for success messages */
         .success-message {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: #d4edda; /* Light green */
+            color: #155724; /* Dark green text */
             border: 1px solid #c3e6cb;
         }
 
-        .error-message-area { /* Container for falling errors */
-            position: relative;
-            overflow: hidden; /* Ensures errors stay within the box if needed */
-            min-height: 100px; /* Space for error messages */
+        /* Container for "falling" error popups */
+        .error-message-area {
+            position: relative; /* Needed for absolute positioning of error popups */
+            overflow: hidden; /* Ensures errors stay within this container if animated outside bounds */
+            min-height: 100px; /* Space for multiple error messages */
         }
 
+        /* Styling for individual error popups */
         .error-popup {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: #f8d7da; /* Light red */
+            color: #721c24; /* Dark red text */
             border: 1px solid #f5c6cb;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
-            animation: fallAndShake 0.8s ease-out forwards;
-            opacity: 0;
+            animation: fallAndShake 0.8s ease-out forwards; /* Animation for appearing */
+            opacity: 0; /* Start transparent for animation */
         }
         
+        /* Animation for error popups: fall in and shake */
         @keyframes fallAndShake {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
-            60% { transform: translateY(10px) rotate(-5deg); opacity: 1; }
-            80% { transform: translateY(-5px) rotate(5deg); }
-            100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; } /* Start above and transparent */
+            60% { transform: translateY(10px) rotate(-5deg); opacity: 1; } /* Fall down, slight overshoot and rotate */
+            80% { transform: translateY(-5px) rotate(5deg); } /* Bounce back up and rotate other way */
+            100% { transform: translateY(0) rotate(0deg); opacity: 1; } /* Settle in place */
         }
 
-
+        /* Styling for educational tips section */
         .educational-tips {
             margin-top: 20px;
             padding: 15px;
-            background-color: #fff3cd;
+            background-color: #fff3cd; /* Light yellow, like a notepad */
             border: 1px solid #ffeeba;
-            color: #856404;
+            color: #856404; /* Dark yellow text */
             border-radius: 8px;
-            text-align: left;
+            text-align: left; /* Align tips to the left for readability */
         }
 
         .educational-tips ul {
-            list-style-type: '💡 '; /* Nice bullet point */
+            list-style-type: '💡 '; /* Use a lightbulb emoji as bullet point */
             padding-left: 20px;
         }
 
+        /* Styling for the score display area */
         .score-area {
             margin-top: 30px;
             font-size: 1.3em;
             font-weight: bold;
         }
 
+        /* Styling for achievement badges */
         .badge {
             display: inline-block;
             padding: 5px 10px;
-            background-color: #28a745;
+            background-color: #28a745; /* Green badge background */
             color: white;
             border-radius: 5px;
             font-size: 0.8em;
             margin-left: 10px;
         }
 
-        /* Chaos Mode */
+        /* Chaos Mode Specific Styles: Applied when body has 'chaos-mode' class */
         body.chaos-mode {
-            background: var(--chaos-bg);
-            color: var(--chaos-text);
+            background: var(--chaos-bg); /* Dark background */
+            color: var(--chaos-text); /* Red text */
         }
 
         body.chaos-mode .app-container {
-            background-color: rgba(50, 50, 50, 0.8);
-            box-shadow: 0 10px 20px rgba(255,0,0,0.3);
+            background-color: rgba(50, 50, 50, 0.8); /* Darker semi-transparent background */
+            box-shadow: 0 10px 20px rgba(255,0,0,0.3); /* Reddish shadow */
         }
         
         body.chaos-mode .friday-character {
-            border-color: #FF4136; /* Red */
-            background-color: #58181F; /* Dark red */
+            border-color: #FF4136; /* Red border for Friday character */
+            background-color: #58181F; /* Dark red background for Friday character */
         }
         
         body.chaos-mode .friday-character p {
-            color: #FFA07A; /* Light red/orange for text in chaos */
+            color: #FFA07A; /* Light red/orange text for Friday's dialogue */
         }
         
         body.chaos-mode .friday-character .avatar img {
-            border-color: #FF4136; /* If you add a border to the image */
+            /* border-color: #FF4136; Optional: if you add a border to the image in chaos mode */
         }
 
         body.chaos-mode .choices button, body.chaos-mode .start-button {
-            background-color: var(--chaos-button-bg);
+            background-color: var(--chaos-button-bg); /* Dark red buttons */
         }
         body.chaos-mode .choices button:hover, body.chaos-mode .start-button:hover {
-            background-color: var(--chaos-button-hover-bg);
+            background-color: var(--chaos-button-hover-bg); /* Darker red on hover */
         }
         
         body.chaos-mode .message-area {
-            background-color: #721c24; /* Dark red for messages in chaos */
-            color: #f8d7da;
+            background-color: #721c24; /* Dark red background for messages */
+            color: #f8d7da; /* Light red text for messages */
             border: 1px solid #f5c6cb;
         }
 
+        /* Utility class to hide elements */
         .hidden {
             display: none;
         }
@@ -211,13 +232,13 @@
 
         <div id="gameScreen" class="hidden">
             <p id="dayDisplay">Monday: Coffee and code...</p>
+            
             <div id="fridayArea" class="hidden">
                 <div class="friday-character">
                     <div class="avatar">
-                        <img id="fridayAvatarImage" src="friday_cool.png" alt="Friday Character">
+                        <img id="fridayAvatarImage" src="https://placehold.co/200x200/E0F7FA/0077CC?text=Cool+Friday" alt="Friday Character" onerror="this.src='https://placehold.co/200x200/CCCCCC/333333?text=Image+Error'; this.alt='Error loading image'">
                     </div>
-                    <p id="fridayDialog">...</p>
-                </div>
+                    <p id="fridayDialog">...</p> </div>
                 <div class="choices">
                     <button id="deployButton" onclick="handleDeploy()">Push to Production! 🚀</button>
                     <button id="resistButton" onclick="handleResist()">No! Test & Wait! 🛡️</button>
@@ -238,21 +259,23 @@
 
         <div class="score-area">
             Weekend Survival Score: <span id="scoreValue">0</span>
-            <span id="badgeArea"></span>
-        </div>
+            <span id="badgeArea"></span> </div>
         <p style="font-size: 0.8em; margin-top: 20px;">(A simplified prototype. No actual servers will be harmed!)</p>
     </div>
 
     <script>
+        // Game state variables
         let score = 0;
-        let currentDayIndex = 0; // 0: Mon, 1: Tue, 2: Wed, 3: Thu, 4: Friday!
+        let currentDayIndex = 0; // 0: Mon, 1: Tue, ..., 4: Friday!
         const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "FRIDAY!"];
 
-        // Define image filenames for Friday's states
-        const FRIDAY_AVATAR_COOL = "friday_cool.png";
-        const FRIDAY_AVATAR_PRANKSTER = "friday_prankster.png";
-        const FRIDAY_AVATAR_DISAPPOINTED = "friday_disappointed.png"; // Used when user resists
+        // Define placeholder image URLs for Friday's states
+        // IMPORTANT: Replace these with your actual image paths or use more descriptive placeholders
+        const FRIDAY_AVATAR_COOL = "https://placehold.co/200x200/E0F7FA/0077CC?text=Cool+Friday";
+        const FRIDAY_AVATAR_PRANKSTER = "https://placehold.co/200x200/58181F/FFA07A?text=Prankster";
+        const FRIDAY_AVATAR_DISAPPOINTED = "https://placehold.co/200x200/E0F7FA/0077CC?text=Disappointed";
 
+        // Dialogues for Friday, categorized by situation
         const fridayDialogues = {
             initial: [
                 "Yo, dude! It's FRI-DAY! Your code is pure gold. What do you say, push it live and grab an early beer?",
@@ -266,13 +289,14 @@
                 "Haha, those red error messages are like confetti! Kind of a party, but... different. Enjoy your weekend... or what's left of it!",
                 "See? I told you *something* would happen! Gives you something to do on Monday. You're welcome, huh! 😉"
             ],
-            resistReaction: [ // Dialogues for when the user resists
+            resistReaction: [ // Dialogues for when the user resists deploying
                 "Boring... but okay, your loss, pal! I'm gonna go catch some waves. Have a safe weekend then!",
                 "Ah, the sensible choice. Fine, fine. More cocktails for me! 😉",
                 "Okay, party pooper! I'll see you on Monday then. I'll probably still be chilling."
             ]
         };
 
+        // Educational content/tips shown after a bad decision
         const educationalContent = [
             "Never deploy on a Friday afternoon. Plan important releases for Tuesday or Wednesday.",
             "Always ensure a thorough testing process in a staging environment identical to production.",
@@ -282,6 +306,7 @@
             "Ensure good monitoring and alerting, so you can detect problems quickly (even if Friday has misled you)."
         ];
         
+        // Potential error messages for when a deploy goes wrong
         const errorMessages = [
             "💥 500 Internal Server Error! The server has had enough!",
             "📉 Database Connection Lost! Where did that data go?!",
@@ -291,12 +316,12 @@
             "🚨 ALERT! Customers are calling angrily! Your weekend is officially ruined."
         ];
 
-        // DOM Element References
+        // DOM Element References for quick access
         const startScreen = document.getElementById('startScreen');
         const gameScreen = document.getElementById('gameScreen');
         const dayDisplay = document.getElementById('dayDisplay');
         const fridayArea = document.getElementById('fridayArea');
-        const fridayAvatarImage = document.getElementById('fridayAvatarImage'); // Get the <img> tag
+        const fridayAvatarImage = document.getElementById('fridayAvatarImage');
         const fridayDialogElem = document.getElementById('fridayDialog');
         const messageArea = document.getElementById('messageArea');
         const educationalTipsElem = document.getElementById('educationalTips');
@@ -306,19 +331,28 @@
         const resistButton = document.getElementById('resistButton');
         const nextWeekButton = document.getElementById('nextWeekButton');
 
-        // Helper function to get a random element from an array
+        /**
+         * Helper function to get a random element from an array.
+         * @param {Array} arr - The array to pick from.
+         * @returns {*} A random element from the array.
+         */
         function getRandomElement(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        // Function to update the player's score
+        /**
+         * Updates the player's score and refreshes the display.
+         * @param {number} change - The amount to change the score by (can be negative).
+         */
         function updateScore(change) {
             score += change;
             scoreValueElem.textContent = score;
-            updateBadge();
+            updateBadge(); // Update badges based on the new score
         }
         
-        // Function to update player badges based on score
+        /**
+         * Updates player badges based on the current score.
+         */
         function updateBadge() {
             badgeArea.innerHTML = ''; // Clear existing badges
             if (score >= 5) {
@@ -331,17 +365,20 @@
                 const badge = document.createElement('span');
                 badge.className = 'badge';
                 badge.textContent = 'Friday Master!';
-                 badgeArea.appendChild(document.createTextNode(" ")); // Space between badges
+                 badgeArea.appendChild(document.createTextNode(" ")); // Add a space if multiple badges
                 badgeArea.appendChild(badge);
             }
-            // Add more badges for higher scores here
+            // Add more badge conditions here for higher scores
         }
 
-        // Function to display educational tips after a fiasco
+        /**
+         * Displays educational tips after a "fiasco" (bad deployment).
+         */
         function showEducationalTips() {
-            educationalTipsElem.classList.remove('hidden');
+            educationalTipsElem.classList.remove('hidden'); // Make the tips section visible
             const ul = educationalTipsElem.querySelector('ul');
             ul.innerHTML = ''; // Clear previous tips
+            // Populate with new tips
             educationalContent.forEach(tip => {
                 const li = document.createElement('li');
                 li.textContent = tip;
@@ -349,7 +386,13 @@
             });
         }
         
-        // Function to create a typewriter effect for text
+        /**
+         * Creates a typewriter effect for displaying text character by character.
+         * @param {HTMLElement} element - The HTML element to display the text in.
+         * @param {string} text - The text to display.
+         * @param {function} [callback] - Optional callback function to execute when typing is complete.
+         * @param {number} [speed=50] - The speed of typing in milliseconds per character.
+         */
         function typeWriterEffect(element, text, callback, speed = 50) {
             let i = 0;
             element.innerHTML = ""; // Clear previous text
@@ -359,133 +402,156 @@
                     i++;
                     setTimeout(type, speed);
                 } else if (callback) {
-                    callback(); // Execute callback function when typing is done
+                    callback(); // Execute callback if provided
                 }
             }
             type();
         }
 
-        // Function to display Friday with the correct avatar and dialog
-        function displayFriday(state = "cool") { // states: "cool", "prankster", "disappointed"
-            fridayArea.classList.remove('hidden');
+        /**
+         * Displays the Friday character with the appropriate avatar and dialogue.
+         * @param {string} [state="cool"] - The state of Friday ("cool", "prankster", "disappointed").
+         */
+        function displayFriday(state = "cool") {
+            fridayArea.classList.remove('hidden'); // Make Friday visible
             let dialog;
+            let avatarSrc;
+            let avatarAlt;
+
             switch(state) {
                 case "prankster":
                     dialog = getRandomElement(fridayDialogues.postDeployPrankster);
-                    fridayAvatarImage.src = FRIDAY_AVATAR_PRANKSTER; 
-                    fridayAvatarImage.alt = "Friday as a Prankster";
+                    avatarSrc = FRIDAY_AVATAR_PRANKSTER; 
+                    avatarAlt = "Friday as a Prankster";
                     break;
                 case "disappointed":
                     dialog = getRandomElement(fridayDialogues.resistReaction);
-                    fridayAvatarImage.src = FRIDAY_AVATAR_DISAPPOINTED; 
-                    fridayAvatarImage.alt = "Disappointed Friday";
+                    avatarSrc = FRIDAY_AVATAR_DISAPPOINTED; 
+                    avatarAlt = "Disappointed Friday";
                     break;
                 case "cool":
-                default:
+                default: // Default to "cool" Friday
                     dialog = getRandomElement(fridayDialogues.initial);
-                    fridayAvatarImage.src = FRIDAY_AVATAR_COOL; 
-                    fridayAvatarImage.alt = "Cool Friday";
+                    avatarSrc = FRIDAY_AVATAR_COOL; 
+                    avatarAlt = "Cool Friday";
                     break;
             }
-            typeWriterEffect(fridayDialogElem, dialog);
+            fridayAvatarImage.src = avatarSrc;
+            fridayAvatarImage.alt = avatarAlt;
+            // Add error handling for image loading directly on the img tag via onerror
+            typeWriterEffect(fridayDialogElem, dialog); // Display dialogue with typewriter effect
         }
 
-        // Function to handle the "Deploy to Production" choice
+        /**
+         * Handles the player's choice to "Deploy to Production".
+         * This usually results in a "fiasco".
+         */
         function handleDeploy() {
             document.body.classList.add('chaos-mode'); // Switch to chaos theme
             fridayArea.classList.remove('hidden'); 
-            deployButton.classList.add('hidden');
+            deployButton.classList.add('hidden'); // Hide choice buttons
             resistButton.classList.add('hidden');
-            nextWeekButton.classList.remove('hidden');
+            nextWeekButton.classList.remove('hidden'); // Show "next week" button
 
-            displayFriday("prankster"); // Friday is now a prankster
+            displayFriday("prankster"); // Friday reveals their prankster side
 
             messageArea.innerHTML = ''; // Clear previous messages
-            messageArea.classList.remove('success-message');
+            messageArea.classList.remove('success-message'); // Ensure no success styling
             
-            // Show multiple "falling" error messages
+            // Show multiple "falling" error messages with a delay
             let errorDisplayDelay = 0;
             for (let i = 0; i < 3; i++) { // Show 3 random errors
                 setTimeout(() => {
                     const errorDiv = document.createElement('div');
-                    errorDiv.className = 'error-popup';
+                    errorDiv.className = 'error-popup'; // Apply animation and styling
                     errorDiv.textContent = getRandomElement(errorMessages);
                     messageArea.appendChild(errorDiv);
                 }, errorDisplayDelay);
                 errorDisplayDelay += 600; // Stagger the appearance of error messages
             }
             
-            // After errors, show educational tips
+            // After errors are displayed, show educational tips
             setTimeout(() => { 
                  showEducationalTips();
-            }, errorDisplayDelay + 200);
+            }, errorDisplayDelay + 200); // Delay slightly after the last error
 
-            updateScore(-5); // Penalty for deploying on Friday and failing
+            updateScore(-5); // Penalize player for the bad decision
         }
 
-        // Function to handle the "Resist & Wait" choice
+        /**
+         * Handles the player's choice to "Resist & Wait".
+         * This is the "good" choice.
+         */
         function handleResist() {
-            document.body.classList.remove('chaos-mode'); // Ensure sunny mode
+            document.body.classList.remove('chaos-mode'); // Ensure sunny theme
             fridayArea.classList.remove('hidden'); 
-            deployButton.classList.add('hidden');
+            deployButton.classList.add('hidden'); // Hide choice buttons
             resistButton.classList.add('hidden');
-            nextWeekButton.classList.remove('hidden');
+            nextWeekButton.classList.remove('hidden'); // Show "next week" button
             
-            displayFriday("disappointed"); // Show disappointed Friday
+            displayFriday("disappointed"); // Friday is disappointed but respects the choice
 
             messageArea.innerHTML = ''; // Clear previous messages
             const successDiv = document.createElement('div');
             successDiv.textContent = "Well done! Production is stable. You've earned a stress-free weekend! You get the 'Safe Weekend Badge' (for this week).";
             messageArea.appendChild(successDiv);
-            messageArea.classList.add('success-message');
+            messageArea.classList.add('success-message'); // Apply success styling
             
             educationalTipsElem.classList.add('hidden'); // No tips needed for success
 
-            updateScore(10); // Reward for resisting
+            updateScore(10); // Reward player for good decision
         }
 
-        // Function to simulate advancing through the work week
+        /**
+         * Simulates advancing through the work week, day by day.
+         */
         function advanceDay() {
             currentDayIndex++;
-            if (currentDayIndex < daysOfWeek.length -1) { // Not Friday yet
+            if (currentDayIndex < daysOfWeek.length - 1) { // If it's not Friday yet
                 dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}: Working hard... ${daysOfWeek.length - 1 - currentDayIndex} day(s) until Friday!`;
-                setTimeout(advanceDay, 1500); // Simulate passage of time
+                setTimeout(advanceDay, 1500); // Simulate passage of time (1.5 seconds per day)
             } else { // It's Friday!
                 dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}! The Big Decision!`;
-                fridayArea.classList.remove('hidden');
-                deployButton.classList.remove('hidden');
+                fridayArea.classList.remove('hidden'); // Show Friday interaction area
+                deployButton.classList.remove('hidden'); // Show choice buttons
                 resistButton.classList.remove('hidden');
-                displayFriday("cool"); // Display initial cool Friday
+                displayFriday("cool"); // Display initial "cool" Friday
             }
         }
 
-        // Function to reset the game state for a new week
+        /**
+         * Resets the game state for a new week.
+         */
         function resetForNewWeek() {
-            document.body.classList.remove('chaos-mode');
-            messageArea.innerHTML = '';
+            document.body.classList.remove('chaos-mode'); // Back to sunny theme
+            messageArea.innerHTML = ''; // Clear messages
             messageArea.classList.remove('success-message');
-            educationalTipsElem.classList.add('hidden');
-            fridayArea.classList.add('hidden');
-            deployButton.classList.add('hidden');
+            educationalTipsElem.classList.add('hidden'); // Hide tips
+            fridayArea.classList.add('hidden'); // Hide Friday
+            deployButton.classList.add('hidden'); // Hide buttons
             resistButton.classList.add('hidden');
             nextWeekButton.classList.add('hidden');
-            fridayAvatarImage.src = FRIDAY_AVATAR_COOL; // Reset avatar to cool Friday
+            // Reset Friday's avatar to the default cool one
+            fridayAvatarImage.src = FRIDAY_AVATAR_COOL; 
             fridayAvatarImage.alt = "Cool Friday";
         }
 
-        // Function to start the game
+        /**
+         * Starts the game: hides the start screen, shows the game screen, and begins the week.
+         */
         function startGame() {
-            startScreen.classList.add('hidden');
-            gameScreen.classList.remove('hidden');
+            startScreen.classList.add('hidden'); // Hide start screen
+            gameScreen.classList.remove('hidden'); // Show game screen
             
-            resetForNewWeek();
+            resetForNewWeek(); // Reset game elements for a fresh start
 
-            currentDayIndex = 0;
-            dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}: The week begins. Coffee!`;
-            setTimeout(advanceDay, 1500); // Start the week progression
+            currentDayIndex = -1; // Start before Monday so advanceDay brings it to Monday first
+            dayDisplay.textContent = `The week begins. Coffee!`; // Initial message
+            advanceDay(); // Start the week progression
         }
 
-        // Initial setup: startGame() will be called by the start button.
+        // Initial setup: startGame() will be called by the start button in the HTML.
+        // Make sure image paths are correct or use placeholders as shown.
     </script>
 </body>
 </html>
@@ -496,72 +562,85 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Friday Fiasco</title>
     <style>
+        /*
+          Friday Fiasco - A fun game about making good (or bad) decisions on a Friday.
+          This game simulates the dilemma of deploying code on a Friday afternoon.
+        */
+
+        /* Root variables for easy theme management */
         :root {
-            --font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive; /* Matches the vibe */
-            --sunny-bg: linear-gradient(135deg, #FFD700, #FFA500); /* Sunny yellow/orange */
-            --sunny-text: #333;
-            --sunny-button-bg: #4CAF50;
-            --sunny-button-hover-bg: #45a049;
-            --chaos-bg: linear-gradient(135deg, #333, #111); /* Dark/chaos */
-            --chaos-text: #FF4136; /* Red for errors */
-            --chaos-button-bg: #8B0000;
-            --chaos-button-hover-bg: #7A0000;
-            --friday-color: #0077cc; /* Color for Friday's text */
+            --font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive; /* Fun, comic-style font */
+            --sunny-bg: linear-gradient(135deg, #FFD700, #FFA500); /* Sunny yellow/orange gradient for normal mode */
+            --sunny-text: #333; /* Dark text for good contrast on sunny background */
+            --sunny-button-bg: #4CAF50; /* Green for positive action buttons */
+            --sunny-button-hover-bg: #45a049; /* Darker green for button hover */
+            --chaos-bg: linear-gradient(135deg, #333, #111); /* Dark gradient for "chaos" mode (bad decisions) */
+            --chaos-text: #FF4136; /* Red text for errors and chaos mode */
+            --chaos-button-bg: #8B0000; /* Dark red for buttons in chaos mode */
+            --chaos-button-hover-bg: #7A0000; /* Darker red for chaos button hover */
+            --friday-color: #0077cc; /* Blue for Friday character's text */
         }
 
+        /* General body styling */
         body {
             font-family: var(--font-family);
             margin: 0;
             padding: 20px;
             text-align: center;
-            transition: background 1s ease-in-out, color 1s ease-in-out;
-            min-height: 100vh;
+            transition: background 1s ease-in-out, color 1s ease-in-out; /* Smooth transitions for theme changes */
+            min-height: 100vh; /* Ensure body takes at least full viewport height */
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            background: var(--sunny-bg);
+            align-items: center; /* Center content horizontally */
+            justify-content: center; /* Center content vertically */
+            background: var(--sunny-bg); /* Default to sunny theme */
             color: var(--sunny-text);
         }
 
+        /* Main application container */
         .app-container {
-            background-color: rgba(255, 255, 255, 0.8);
+            background-color: rgba(255, 255, 255, 0.8); /* Semi-transparent white background */
             padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-            max-width: 600px;
-            width: 90%;
+            border-radius: 15px; /* Rounded corners */
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2); /* Soft shadow for depth */
+            max-width: 600px; /* Max width for better readability on large screens */
+            width: 90%; /* Responsive width */
         }
 
+        /* Main heading style */
         h1 {
-            font-size: 2.5em;
+            font-size: 2.5em; /* Large heading */
             margin-bottom: 20px;
         }
 
+        /* Styling for the "Friday" character area */
         .friday-character {
             margin: 20px auto;
             padding: 15px;
-            border: 3px dashed var(--friday-color);
+            border: 3px dashed var(--friday-color); /* Dashed border with Friday's color */
             border-radius: 10px;
-            background-color: #e0f7fa; /* Light blue, suits the beach theme */
-            max-width: 80%;
+            background-color: #e0f7fa; /* Light blue background, like a beach */
+            max-width: 90%; /* Increased max-width to accommodate larger image */
         }
 
-        .friday-character .avatar img { /* Style for the avatar image */
-            max-width: 120px; /* Adjusted for potentially more detailed sloth */
-            height: auto;
+        /* Styling for Friday's avatar image */
+        .friday-character .avatar img {
+            max-width: 200px; /* INCREASED: Made the image larger */
+            height: auto; /* Maintain aspect ratio */
             margin-bottom: 10px;
             /* border-radius: 50%; Optional: if you want a circular avatar */
             /* border: 2px solid var(--friday-color); Optional border for the image itself */
         }
 
+        /* Styling for Friday's dialogue text */
         .friday-character p {
             font-size: 1.2em;
             font-style: italic;
             color: var(--friday-color);
-            min-height: 60px; /* Ensure space for dialogue */
+            min-height: 60px; /* Ensure space for dialogue, prevents layout shifts */
         }
 
+        /* General styling for buttons */
         .choices button, .start-button {
             background-color: var(--sunny-button-bg);
             color: white;
@@ -571,121 +650,129 @@
             border-radius: 8px;
             cursor: pointer;
             margin: 10px;
-            transition: background-color 0.3s ease;
-            font-family: var(--font-family);
+            transition: background-color 0.3s ease; /* Smooth hover effect */
+            font-family: var(--font-family); /* Consistent font */
         }
 
         .choices button:hover, .start-button:hover {
-            background-color: var(--sunny-button-hover-bg);
+            background-color: var(--sunny-button-hover-bg); /* Darken on hover */
         }
 
+        /* Area for displaying game messages (success/error) */
         .message-area {
             margin-top: 20px;
             padding: 15px;
             border-radius: 8px;
             font-size: 1.1em;
-            min-height: 50px;
+            min-height: 50px; /* Ensure space for messages */
         }
 
+        /* Styling for success messages */
         .success-message {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: #d4edda; /* Light green */
+            color: #155724; /* Dark green text */
             border: 1px solid #c3e6cb;
         }
 
-        .error-message-area { /* Container for falling errors */
-            position: relative;
-            overflow: hidden; /* Ensures errors stay within the box if needed */
-            min-height: 100px; /* Space for error messages */
+        /* Container for "falling" error popups */
+        .error-message-area {
+            position: relative; /* Needed for absolute positioning of error popups */
+            overflow: hidden; /* Ensures errors stay within this container if animated outside bounds */
+            min-height: 100px; /* Space for multiple error messages */
         }
 
+        /* Styling for individual error popups */
         .error-popup {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: #f8d7da; /* Light red */
+            color: #721c24; /* Dark red text */
             border: 1px solid #f5c6cb;
             padding: 10px;
             margin-bottom: 10px;
             border-radius: 5px;
-            animation: fallAndShake 0.8s ease-out forwards;
-            opacity: 0;
+            animation: fallAndShake 0.8s ease-out forwards; /* Animation for appearing */
+            opacity: 0; /* Start transparent for animation */
         }
         
+        /* Animation for error popups: fall in and shake */
         @keyframes fallAndShake {
-            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
-            60% { transform: translateY(10px) rotate(-5deg); opacity: 1; }
-            80% { transform: translateY(-5px) rotate(5deg); }
-            100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; } /* Start above and transparent */
+            60% { transform: translateY(10px) rotate(-5deg); opacity: 1; } /* Fall down, slight overshoot and rotate */
+            80% { transform: translateY(-5px) rotate(5deg); } /* Bounce back up and rotate other way */
+            100% { transform: translateY(0) rotate(0deg); opacity: 1; } /* Settle in place */
         }
 
-
+        /* Styling for educational tips section */
         .educational-tips {
             margin-top: 20px;
             padding: 15px;
-            background-color: #fff3cd;
+            background-color: #fff3cd; /* Light yellow, like a notepad */
             border: 1px solid #ffeeba;
-            color: #856404;
+            color: #856404; /* Dark yellow text */
             border-radius: 8px;
-            text-align: left;
+            text-align: left; /* Align tips to the left for readability */
         }
 
         .educational-tips ul {
-            list-style-type: '💡 '; /* Nice bullet point */
+            list-style-type: '💡 '; /* Use a lightbulb emoji as bullet point */
             padding-left: 20px;
         }
 
+        /* Styling for the score display area */
         .score-area {
             margin-top: 30px;
             font-size: 1.3em;
             font-weight: bold;
         }
 
+        /* Styling for achievement badges */
         .badge {
             display: inline-block;
             padding: 5px 10px;
-            background-color: #28a745;
+            background-color: #28a745; /* Green badge background */
             color: white;
             border-radius: 5px;
             font-size: 0.8em;
             margin-left: 10px;
         }
 
-        /* Chaos Mode */
+        /* Chaos Mode Specific Styles: Applied when body has 'chaos-mode' class */
         body.chaos-mode {
-            background: var(--chaos-bg);
-            color: var(--chaos-text);
+            background: var(--chaos-bg); /* Dark background */
+            color: var(--chaos-text); /* Red text */
         }
 
         body.chaos-mode .app-container {
-            background-color: rgba(50, 50, 50, 0.8);
-            box-shadow: 0 10px 20px rgba(255,0,0,0.3);
+            background-color: rgba(50, 50, 50, 0.8); /* Darker semi-transparent background */
+            box-shadow: 0 10px 20px rgba(255,0,0,0.3); /* Reddish shadow */
         }
         
         body.chaos-mode .friday-character {
-            border-color: #FF4136; /* Red */
-            background-color: #58181F; /* Dark red */
+            border-color: #FF4136; /* Red border for Friday character */
+            background-color: #58181F; /* Dark red background for Friday character */
         }
         
         body.chaos-mode .friday-character p {
-            color: #FFA07A; /* Light red/orange for text in chaos */
+            color: #FFA07A; /* Light red/orange text for Friday's dialogue */
         }
         
         body.chaos-mode .friday-character .avatar img {
-            border-color: #FF4136; /* If you add a border to the image */
+            /* border-color: #FF4136; Optional: if you add a border to the image in chaos mode */
         }
 
         body.chaos-mode .choices button, body.chaos-mode .start-button {
-            background-color: var(--chaos-button-bg);
+            background-color: var(--chaos-button-bg); /* Dark red buttons */
         }
         body.chaos-mode .choices button:hover, body.chaos-mode .start-button:hover {
-            background-color: var(--chaos-button-hover-bg);
+            background-color: var(--chaos-button-hover-bg); /* Darker red on hover */
         }
         
         body.chaos-mode .message-area {
-            background-color: #721c24; /* Dark red for messages in chaos */
-            color: #f8d7da;
+            background-color: #721c24; /* Dark red background for messages */
+            color: #f8d7da; /* Light red text for messages */
             border: 1px solid #f5c6cb;
         }
 
+        /* Utility class to hide elements */
         .hidden {
             display: none;
         }
@@ -702,13 +789,13 @@
 
         <div id="gameScreen" class="hidden">
             <p id="dayDisplay">Monday: Coffee and code...</p>
+            
             <div id="fridayArea" class="hidden">
                 <div class="friday-character">
                     <div class="avatar">
-                        <img id="fridayAvatarImage" src="friday_cool.png" alt="Friday Character">
+                        <img id="fridayAvatarImage" src="https://placehold.co/200x200/E0F7FA/0077CC?text=Cool+Friday" alt="Friday Character" onerror="this.src='https://placehold.co/200x200/CCCCCC/333333?text=Image+Error'; this.alt='Error loading image'">
                     </div>
-                    <p id="fridayDialog">...</p>
-                </div>
+                    <p id="fridayDialog">...</p> </div>
                 <div class="choices">
                     <button id="deployButton" onclick="handleDeploy()">Push to Production! 🚀</button>
                     <button id="resistButton" onclick="handleResist()">No! Test & Wait! 🛡️</button>
@@ -729,21 +816,23 @@
 
         <div class="score-area">
             Weekend Survival Score: <span id="scoreValue">0</span>
-            <span id="badgeArea"></span>
-        </div>
+            <span id="badgeArea"></span> </div>
         <p style="font-size: 0.8em; margin-top: 20px;">(A simplified prototype. No actual servers will be harmed!)</p>
     </div>
 
     <script>
+        // Game state variables
         let score = 0;
-        let currentDayIndex = 0; // 0: Mon, 1: Tue, 2: Wed, 3: Thu, 4: Friday!
+        let currentDayIndex = 0; // 0: Mon, 1: Tue, ..., 4: Friday!
         const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "FRIDAY!"];
 
-        // Define image filenames for Friday's states
-        const FRIDAY_AVATAR_COOL = "friday_cool.png";
-        const FRIDAY_AVATAR_PRANKSTER = "friday_prankster.png";
-        const FRIDAY_AVATAR_DISAPPOINTED = "friday_disappointed.png"; // Used when user resists
+        // Define placeholder image URLs for Friday's states
+        // IMPORTANT: Replace these with your actual image paths or use more descriptive placeholders
+        const FRIDAY_AVATAR_COOL = "https://placehold.co/200x200/E0F7FA/0077CC?text=Cool+Friday";
+        const FRIDAY_AVATAR_PRANKSTER = "https://placehold.co/200x200/58181F/FFA07A?text=Prankster";
+        const FRIDAY_AVATAR_DISAPPOINTED = "https://placehold.co/200x200/E0F7FA/0077CC?text=Disappointed";
 
+        // Dialogues for Friday, categorized by situation
         const fridayDialogues = {
             initial: [
                 "Yo, dude! It's FRI-DAY! Your code is pure gold. What do you say, push it live and grab an early beer?",
@@ -757,13 +846,14 @@
                 "Haha, those red error messages are like confetti! Kind of a party, but... different. Enjoy your weekend... or what's left of it!",
                 "See? I told you *something* would happen! Gives you something to do on Monday. You're welcome, huh! 😉"
             ],
-            resistReaction: [ // Dialogues for when the user resists
+            resistReaction: [ // Dialogues for when the user resists deploying
                 "Boring... but okay, your loss, pal! I'm gonna go catch some waves. Have a safe weekend then!",
                 "Ah, the sensible choice. Fine, fine. More cocktails for me! 😉",
                 "Okay, party pooper! I'll see you on Monday then. I'll probably still be chilling."
             ]
         };
 
+        // Educational content/tips shown after a bad decision
         const educationalContent = [
             "Never deploy on a Friday afternoon. Plan important releases for Tuesday or Wednesday.",
             "Always ensure a thorough testing process in a staging environment identical to production.",
@@ -773,6 +863,7 @@
             "Ensure good monitoring and alerting, so you can detect problems quickly (even if Friday has misled you)."
         ];
         
+        // Potential error messages for when a deploy goes wrong
         const errorMessages = [
             "💥 500 Internal Server Error! The server has had enough!",
             "📉 Database Connection Lost! Where did that data go?!",
@@ -782,12 +873,12 @@
             "🚨 ALERT! Customers are calling angrily! Your weekend is officially ruined."
         ];
 
-        // DOM Element References
+        // DOM Element References for quick access
         const startScreen = document.getElementById('startScreen');
         const gameScreen = document.getElementById('gameScreen');
         const dayDisplay = document.getElementById('dayDisplay');
         const fridayArea = document.getElementById('fridayArea');
-        const fridayAvatarImage = document.getElementById('fridayAvatarImage'); // Get the <img> tag
+        const fridayAvatarImage = document.getElementById('fridayAvatarImage');
         const fridayDialogElem = document.getElementById('fridayDialog');
         const messageArea = document.getElementById('messageArea');
         const educationalTipsElem = document.getElementById('educationalTips');
@@ -797,19 +888,28 @@
         const resistButton = document.getElementById('resistButton');
         const nextWeekButton = document.getElementById('nextWeekButton');
 
-        // Helper function to get a random element from an array
+        /**
+         * Helper function to get a random element from an array.
+         * @param {Array} arr - The array to pick from.
+         * @returns {*} A random element from the array.
+         */
         function getRandomElement(arr) {
             return arr[Math.floor(Math.random() * arr.length)];
         }
 
-        // Function to update the player's score
+        /**
+         * Updates the player's score and refreshes the display.
+         * @param {number} change - The amount to change the score by (can be negative).
+         */
         function updateScore(change) {
             score += change;
             scoreValueElem.textContent = score;
-            updateBadge();
+            updateBadge(); // Update badges based on the new score
         }
         
-        // Function to update player badges based on score
+        /**
+         * Updates player badges based on the current score.
+         */
         function updateBadge() {
             badgeArea.innerHTML = ''; // Clear existing badges
             if (score >= 5) {
@@ -822,17 +922,20 @@
                 const badge = document.createElement('span');
                 badge.className = 'badge';
                 badge.textContent = 'Friday Master!';
-                 badgeArea.appendChild(document.createTextNode(" ")); // Space between badges
+                 badgeArea.appendChild(document.createTextNode(" ")); // Add a space if multiple badges
                 badgeArea.appendChild(badge);
             }
-            // Add more badges for higher scores here
+            // Add more badge conditions here for higher scores
         }
 
-        // Function to display educational tips after a fiasco
+        /**
+         * Displays educational tips after a "fiasco" (bad deployment).
+         */
         function showEducationalTips() {
-            educationalTipsElem.classList.remove('hidden');
+            educationalTipsElem.classList.remove('hidden'); // Make the tips section visible
             const ul = educationalTipsElem.querySelector('ul');
             ul.innerHTML = ''; // Clear previous tips
+            // Populate with new tips
             educationalContent.forEach(tip => {
                 const li = document.createElement('li');
                 li.textContent = tip;
@@ -840,7 +943,13 @@
             });
         }
         
-        // Function to create a typewriter effect for text
+        /**
+         * Creates a typewriter effect for displaying text character by character.
+         * @param {HTMLElement} element - The HTML element to display the text in.
+         * @param {string} text - The text to display.
+         * @param {function} [callback] - Optional callback function to execute when typing is complete.
+         * @param {number} [speed=50] - The speed of typing in milliseconds per character.
+         */
         function typeWriterEffect(element, text, callback, speed = 50) {
             let i = 0;
             element.innerHTML = ""; // Clear previous text
@@ -850,133 +959,156 @@
                     i++;
                     setTimeout(type, speed);
                 } else if (callback) {
-                    callback(); // Execute callback function when typing is done
+                    callback(); // Execute callback if provided
                 }
             }
             type();
         }
 
-        // Function to display Friday with the correct avatar and dialog
-        function displayFriday(state = "cool") { // states: "cool", "prankster", "disappointed"
-            fridayArea.classList.remove('hidden');
+        /**
+         * Displays the Friday character with the appropriate avatar and dialogue.
+         * @param {string} [state="cool"] - The state of Friday ("cool", "prankster", "disappointed").
+         */
+        function displayFriday(state = "cool") {
+            fridayArea.classList.remove('hidden'); // Make Friday visible
             let dialog;
+            let avatarSrc;
+            let avatarAlt;
+
             switch(state) {
                 case "prankster":
                     dialog = getRandomElement(fridayDialogues.postDeployPrankster);
-                    fridayAvatarImage.src = FRIDAY_AVATAR_PRANKSTER; 
-                    fridayAvatarImage.alt = "Friday as a Prankster";
+                    avatarSrc = FRIDAY_AVATAR_PRANKSTER; 
+                    avatarAlt = "Friday as a Prankster";
                     break;
                 case "disappointed":
                     dialog = getRandomElement(fridayDialogues.resistReaction);
-                    fridayAvatarImage.src = FRIDAY_AVATAR_DISAPPOINTED; 
-                    fridayAvatarImage.alt = "Disappointed Friday";
+                    avatarSrc = FRIDAY_AVATAR_DISAPPOINTED; 
+                    avatarAlt = "Disappointed Friday";
                     break;
                 case "cool":
-                default:
+                default: // Default to "cool" Friday
                     dialog = getRandomElement(fridayDialogues.initial);
-                    fridayAvatarImage.src = FRIDAY_AVATAR_COOL; 
-                    fridayAvatarImage.alt = "Cool Friday";
+                    avatarSrc = FRIDAY_AVATAR_COOL; 
+                    avatarAlt = "Cool Friday";
                     break;
             }
-            typeWriterEffect(fridayDialogElem, dialog);
+            fridayAvatarImage.src = avatarSrc;
+            fridayAvatarImage.alt = avatarAlt;
+            // Add error handling for image loading directly on the img tag via onerror
+            typeWriterEffect(fridayDialogElem, dialog); // Display dialogue with typewriter effect
         }
 
-        // Function to handle the "Deploy to Production" choice
+        /**
+         * Handles the player's choice to "Deploy to Production".
+         * This usually results in a "fiasco".
+         */
         function handleDeploy() {
             document.body.classList.add('chaos-mode'); // Switch to chaos theme
             fridayArea.classList.remove('hidden'); 
-            deployButton.classList.add('hidden');
+            deployButton.classList.add('hidden'); // Hide choice buttons
             resistButton.classList.add('hidden');
-            nextWeekButton.classList.remove('hidden');
+            nextWeekButton.classList.remove('hidden'); // Show "next week" button
 
-            displayFriday("prankster"); // Friday is now a prankster
+            displayFriday("prankster"); // Friday reveals their prankster side
 
             messageArea.innerHTML = ''; // Clear previous messages
-            messageArea.classList.remove('success-message');
+            messageArea.classList.remove('success-message'); // Ensure no success styling
             
-            // Show multiple "falling" error messages
+            // Show multiple "falling" error messages with a delay
             let errorDisplayDelay = 0;
             for (let i = 0; i < 3; i++) { // Show 3 random errors
                 setTimeout(() => {
                     const errorDiv = document.createElement('div');
-                    errorDiv.className = 'error-popup';
+                    errorDiv.className = 'error-popup'; // Apply animation and styling
                     errorDiv.textContent = getRandomElement(errorMessages);
                     messageArea.appendChild(errorDiv);
                 }, errorDisplayDelay);
                 errorDisplayDelay += 600; // Stagger the appearance of error messages
             }
             
-            // After errors, show educational tips
+            // After errors are displayed, show educational tips
             setTimeout(() => { 
                  showEducationalTips();
-            }, errorDisplayDelay + 200);
+            }, errorDisplayDelay + 200); // Delay slightly after the last error
 
-            updateScore(-5); // Penalty for deploying on Friday and failing
+            updateScore(-5); // Penalize player for the bad decision
         }
 
-        // Function to handle the "Resist & Wait" choice
+        /**
+         * Handles the player's choice to "Resist & Wait".
+         * This is the "good" choice.
+         */
         function handleResist() {
-            document.body.classList.remove('chaos-mode'); // Ensure sunny mode
+            document.body.classList.remove('chaos-mode'); // Ensure sunny theme
             fridayArea.classList.remove('hidden'); 
-            deployButton.classList.add('hidden');
+            deployButton.classList.add('hidden'); // Hide choice buttons
             resistButton.classList.add('hidden');
-            nextWeekButton.classList.remove('hidden');
+            nextWeekButton.classList.remove('hidden'); // Show "next week" button
             
-            displayFriday("disappointed"); // Show disappointed Friday
+            displayFriday("disappointed"); // Friday is disappointed but respects the choice
 
             messageArea.innerHTML = ''; // Clear previous messages
             const successDiv = document.createElement('div');
             successDiv.textContent = "Well done! Production is stable. You've earned a stress-free weekend! You get the 'Safe Weekend Badge' (for this week).";
             messageArea.appendChild(successDiv);
-            messageArea.classList.add('success-message');
+            messageArea.classList.add('success-message'); // Apply success styling
             
             educationalTipsElem.classList.add('hidden'); // No tips needed for success
 
-            updateScore(10); // Reward for resisting
+            updateScore(10); // Reward player for good decision
         }
 
-        // Function to simulate advancing through the work week
+        /**
+         * Simulates advancing through the work week, day by day.
+         */
         function advanceDay() {
             currentDayIndex++;
-            if (currentDayIndex < daysOfWeek.length -1) { // Not Friday yet
+            if (currentDayIndex < daysOfWeek.length - 1) { // If it's not Friday yet
                 dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}: Working hard... ${daysOfWeek.length - 1 - currentDayIndex} day(s) until Friday!`;
-                setTimeout(advanceDay, 1500); // Simulate passage of time
+                setTimeout(advanceDay, 1500); // Simulate passage of time (1.5 seconds per day)
             } else { // It's Friday!
                 dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}! The Big Decision!`;
-                fridayArea.classList.remove('hidden');
-                deployButton.classList.remove('hidden');
+                fridayArea.classList.remove('hidden'); // Show Friday interaction area
+                deployButton.classList.remove('hidden'); // Show choice buttons
                 resistButton.classList.remove('hidden');
-                displayFriday("cool"); // Display initial cool Friday
+                displayFriday("cool"); // Display initial "cool" Friday
             }
         }
 
-        // Function to reset the game state for a new week
+        /**
+         * Resets the game state for a new week.
+         */
         function resetForNewWeek() {
-            document.body.classList.remove('chaos-mode');
-            messageArea.innerHTML = '';
+            document.body.classList.remove('chaos-mode'); // Back to sunny theme
+            messageArea.innerHTML = ''; // Clear messages
             messageArea.classList.remove('success-message');
-            educationalTipsElem.classList.add('hidden');
-            fridayArea.classList.add('hidden');
-            deployButton.classList.add('hidden');
+            educationalTipsElem.classList.add('hidden'); // Hide tips
+            fridayArea.classList.add('hidden'); // Hide Friday
+            deployButton.classList.add('hidden'); // Hide buttons
             resistButton.classList.add('hidden');
             nextWeekButton.classList.add('hidden');
-            fridayAvatarImage.src = FRIDAY_AVATAR_COOL; // Reset avatar to cool Friday
+            // Reset Friday's avatar to the default cool one
+            fridayAvatarImage.src = FRIDAY_AVATAR_COOL; 
             fridayAvatarImage.alt = "Cool Friday";
         }
 
-        // Function to start the game
+        /**
+         * Starts the game: hides the start screen, shows the game screen, and begins the week.
+         */
         function startGame() {
-            startScreen.classList.add('hidden');
-            gameScreen.classList.remove('hidden');
+            startScreen.classList.add('hidden'); // Hide start screen
+            gameScreen.classList.remove('hidden'); // Show game screen
             
-            resetForNewWeek();
+            resetForNewWeek(); // Reset game elements for a fresh start
 
-            currentDayIndex = 0;
-            dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}: The week begins. Coffee!`;
-            setTimeout(advanceDay, 1500); // Start the week progression
+            currentDayIndex = -1; // Start before Monday so advanceDay brings it to Monday first
+            dayDisplay.textContent = `The week begins. Coffee!`; // Initial message
+            advanceDay(); // Start the week progression
         }
 
-        // Initial setup: startGame() will be called by the start button.
+        // Initial setup: startGame() will be called by the start button in the HTML.
+        // Make sure image paths are correct or use placeholders as shown.
     </script>
 </body>
 </html>

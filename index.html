@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Friday Fiasco</title>
+    <style>
+        :root {
+            --font-family: 'Comic Sans MS', 'Chalkboard SE', 'Comic Neue', cursive; /* Matches the vibe */
+            --sunny-bg: linear-gradient(135deg, #FFD700, #FFA500); /* Sunny yellow/orange */
+            --sunny-text: #333;
+            --sunny-button-bg: #4CAF50;
+            --sunny-button-hover-bg: #45a049;
+            --chaos-bg: linear-gradient(135deg, #333, #111); /* Dark/chaos */
+            --chaos-text: #FF4136; /* Red for errors */
+            --chaos-button-bg: #8B0000;
+            --chaos-button-hover-bg: #7A0000;
+            --friday-color: #0077cc; /* Color for Friday's text */
+        }
+
+        body {
+            font-family: var(--font-family);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+            transition: background 1s ease-in-out, color 1s ease-in-out;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: var(--sunny-bg);
+            color: var(--sunny-text);
+        }
+
+        .app-container {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            max-width: 600px;
+            width: 90%;
+        }
+
+        h1 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+        }
+
+        .friday-character {
+            margin: 20px auto;
+            padding: 15px;
+            border: 3px dashed var(--friday-color);
+            border-radius: 10px;
+            background-color: #e0f7fa; /* Light blue, suits the beach theme */
+            max-width: 80%;
+        }
+
+        .friday-character .avatar {
+            font-size: 4em; /* Emoji or icon */
+            margin-bottom: 10px;
+        }
+
+        .friday-character p {
+            font-size: 1.2em;
+            font-style: italic;
+            color: var(--friday-color);
+        }
+
+        .choices button, .start-button {
+            background-color: var(--sunny-button-bg);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.2em;
+            border-radius: 8px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+            font-family: var(--font-family);
+        }
+
+        .choices button:hover, .start-button:hover {
+            background-color: var(--sunny-button-hover-bg);
+        }
+
+        .message-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-size: 1.1em;
+            min-height: 50px;
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error-message-area { /* Container for falling errors */
+            position: relative;
+            overflow: hidden; /* Ensures errors stay within the box if needed */
+        }
+
+        .error-popup {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            animation: fallAndShake 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        
+        @keyframes fallAndShake {
+            0% { transform: translateY(-100px) rotate(0deg); opacity: 0; }
+            60% { transform: translateY(10px) rotate(-5deg); opacity: 1; }
+            80% { transform: translateY(-5px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); opacity: 1; }
+        }
+
+
+        .educational-tips {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #fff3cd;
+            border: 1px solid #ffeeba;
+            color: #856404;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .educational-tips ul {
+            list-style-type: '💡 '; /* Nice bullet point */
+            padding-left: 20px;
+        }
+
+        .score-area {
+            margin-top: 30px;
+            font-size: 1.3em;
+            font-weight: bold;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 5px 10px;
+            background-color: #28a745;
+            color: white;
+            border-radius: 5px;
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+
+        /* Chaos Mode */
+        body.chaos-mode {
+            background: var(--chaos-bg);
+            color: var(--chaos-text);
+        }
+
+        body.chaos-mode .app-container {
+            background-color: rgba(50, 50, 50, 0.8);
+            box-shadow: 0 10px 20px rgba(255,0,0,0.3);
+        }
+        
+        body.chaos-mode .friday-character {
+            border-color: #FF4136; /* Red */
+            background-color: #58181F; /* Dark red */
+        }
+        
+        body.chaos-mode .friday-character p {
+            color: #FFA07A; /* Light red/orange for text in chaos */
+        }
+
+        body.chaos-mode .choices button, body.chaos-mode .start-button {
+            background-color: var(--chaos-button-bg);
+        }
+        body.chaos-mode .choices button:hover, body.chaos-mode .start-button:hover {
+            background-color: var(--chaos-button-hover-bg);
+        }
+        
+        body.chaos-mode .message-area {
+            background-color: #721c24; /* Dark red for messages in chaos */
+            color: #f8d7da;
+            border: 1px solid #f5c6cb;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <h1>Friday Fiasco!</h1>
+
+        <div id="startScreen">
+            <p>Welcome to Friday Fiasco! Are you ready to face the work week (and Friday's temptations)?</p>
+            <button class="start-button" onclick="startGame()">Start the Work Week!</button>
+        </div>
+
+        <div id="gameScreen" class="hidden">
+            <p id="dayDisplay">Monday: Coffee and code...</p>
+
+            <div id="fridayArea" class="hidden"> {/* Corrected class_A to class */}
+                <div class="friday-character">
+                    <div class="avatar" id="fridayAvatar">😎</div>
+                    <p id="fridayDialog">...</p>
+                </div>
+                <div class="choices">
+                    <button id="deployButton" onclick="handleDeploy()">Push to Production! 🚀</button>
+                    <button id="resistButton" onclick="handleResist()">No! Test & Wait! 🛡️</button>
+                </div>
+            </div>
+
+            <div id="messageArea" class="message-area error-message-area">
+                </div>
+
+            <div id="educationalTips" class="educational-tips hidden">
+                <h3>Friday's Wisdom (in hindsight, huh?):</h3>
+                <ul>
+                    </ul>
+            </div>
+            
+            <button class="start-button hidden" id="nextWeekButton" onclick="startGame()">Start a New Week</button>
+        </div>
+
+        <div class="score-area">
+            Weekend Survival Score: <span id="scoreValue">0</span>
+            <span id="badgeArea"></span>
+        </div>
+        <p style="font-size: 0.8em; margin-top: 20px;">(A simplified prototype. No actual servers will be harmed!)</p>
+    </div>
+
+    <script>
+        let score = 0;
+        let currentDayIndex = 0; // 0: Mon, 1: Tue, 2: Wed, 3: Thu, 4: Friday!
+        const daysOfWeek = ["Monday", "Tuesday", "Wednesday", "Thursday", "FRIDAY!"];
+
+        const fridayDialogues = {
+            initial: [
+                "Yo, dude! It's FRI-DAY! Your code is pure gold. What do you say, push it live and grab an early beer?",
+                "Come on, developer hero! Just one more deploy... The sun is shining, the (virtual) cocktails are waiting!",
+                "Testing? Pffft, that's for Monday morning. Now's the time for action! What could possibly go wrong, huh?",
+                "You've worked hard all week. That one small feature... go on, push it to production! Then you'll be *really* ready for the weekend!"
+            ],
+            postDeployPrankster: [
+                "OOPS! That didn't look good! But hey, it's the weekend! Problem for Monday-you, right? *smirks*",
+                "Whoopsie! Looks like the server had weekend plans too. Cheers! 🍹",
+                "Haha, those red error messages are like confetti! Kind of a party, but... different. Enjoy your weekend... or what's left of it!",
+                "See? I told you *something* would happen! Gives you something to do on Monday. You're welcome, huh! 😉"
+            ],
+            resistReaction: [
+                "Boring... but okay, your loss, pal! I'm gonna go catch some waves. Have a safe weekend then!",
+                "Ah, the sensible choice. Fine, fine. More cocktails for me! 😉",
+                "Okay, party pooper! I'll see you on Monday then. I'll probably still be chilling."
+            ]
+        };
+
+        const educationalContent = [
+            "Deploy *never* on a Friday afternoon. Plan important releases for Tuesday or Wednesday.",
+            "Always ensure a *thorough* testing process in a staging environment identical to production.",
+            "A solid rollback plan is your best friend. Test this plan regularly too!",
+            "Code reviews by colleagues are crucial, especially before a release.",
+            "Use feature flags for rolling out new, risky features. This way, you can quickly disable them if things go wrong.",
+            "Ensure good monitoring and alerting, so you can detect problems quickly (even if Friday has misled you)."
+        ];
+        
+        const errorMessages = [
+            "💥 500 Internal Server Error! The server has had enough!",
+            "📉 Database Connection Lost! Where did that data go?!",
+            "🤯 Syntax Error in `production_code.js` on line 666!",
+            "🔥 Critical System Failure! All hands on deck (on Monday, that is)!",
+            "🚫 Access Denied! Even the server doesn't want to see your code anymore!",
+            "🚨 ALERT! Customers are calling angrily! Your weekend is officially ruined."
+        ];
+
+        const startScreen = document.getElementById('startScreen');
+        const gameScreen = document.getElementById('gameScreen');
+        const dayDisplay = document.getElementById('dayDisplay');
+        const fridayArea = document.getElementById('fridayArea');
+        const fridayAvatar = document.getElementById('fridayAvatar');
+        const fridayDialogElem = document.getElementById('fridayDialog');
+        const messageArea = document.getElementById('messageArea');
+        const educationalTipsElem = document.getElementById('educationalTips');
+        const scoreValueElem = document.getElementById('scoreValue');
+        const badgeArea = document.getElementById('badgeArea');
+        const deployButton = document.getElementById('deployButton');
+        const resistButton = document.getElementById('resistButton');
+        const nextWeekButton = document.getElementById('nextWeekButton');
+
+
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function updateScore(change) {
+            score += change;
+            scoreValueElem.textContent = score;
+            updateBadge();
+        }
+        
+        function updateBadge() {
+            badgeArea.innerHTML = ''; // Clear existing badges
+            if (score >= 5) {
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = 'Weekend Hero!';
+                badgeArea.appendChild(badge);
+            }
+             if (score >= 10) {
+                const badge = document.createElement('span');
+                badge.className = 'badge';
+                badge.textContent = 'Friday Master!';
+                 badgeArea.appendChild(document.createTextNode(" ")); // Space between badges
+                badgeArea.appendChild(badge);
+            }
+            // Add more badges for higher scores
+        }
+
+        function showEducationalTips() {
+            educationalTipsElem.classList.remove('hidden');
+            const ul = educationalTipsElem.querySelector('ul');
+            ul.innerHTML = ''; // Clear previous tips
+            educationalContent.forEach(tip => {
+                const li = document.createElement('li');
+                li.textContent = tip;
+                ul.appendChild(li);
+            });
+        }
+        
+        function typeWriterEffect(element, text, callback, speed = 50) {
+            let i = 0;
+            element.innerHTML = ""; // Clear previous text
+            function type() {
+                if (i < text.length) {
+                    element.innerHTML += text.charAt(i);
+                    i++;
+                    setTimeout(type, speed);
+                } else if (callback) {
+                    callback();
+                }
+            }
+            type();
+        }
+
+
+        function displayFriday(isPrankster = false) {
+            fridayArea.classList.remove('hidden');
+            let dialog;
+            if (isPrankster) {
+                dialog = getRandomElement(fridayDialogues.postDeployPrankster);
+                fridayAvatar.textContent = '😈'; // Prankster avatar
+            } else {
+                dialog = getRandomElement(fridayDialogues.initial);
+                fridayAvatar.textContent = '😎'; // Cool avatar
+            }
+            typeWriterEffect(fridayDialogElem, dialog);
+        }
+
+        function handleDeploy() {
+            document.body.classList.add('chaos-mode');
+            fridayArea.classList.remove('hidden'); // Make sure Friday is visible
+            deployButton.classList.add('hidden');
+            resistButton.classList.add('hidden');
+            nextWeekButton.classList.remove('hidden');
+
+            displayFriday(true); // Friday is now a prankster
+
+            messageArea.innerHTML = ''; // Clear previous messages
+            messageArea.classList.remove('success-message');
+            
+            // Show multiple "falling" error messages
+            let delay = 0;
+            for (let i = 0; i < 3; i++) { // Show 3 random errors
+                setTimeout(() => {
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'error-popup';
+                    errorDiv.textContent = getRandomElement(errorMessages);
+                    messageArea.appendChild(errorDiv);
+                }, delay);
+                delay += 600; // Stagger the appearance of error messages
+            }
+            
+            setTimeout(() => { // After errors, show tips
+                 showEducationalTips();
+            }, delay + 200);
+
+
+            updateScore(-5); // Penalty for deploying on Friday and failing
+            // Simulate animation of Friday pushing off cliff / general chaos
+            // This is where you'd trigger more complex visual effects
+            // For now, the background change and error messages do the job.
+        }
+
+        function handleResist() {
+            document.body.classList.remove('chaos-mode'); // Ensure sunny mode
+            fridayArea.classList.remove('hidden'); // Make sure Friday is visible
+            deployButton.classList.add('hidden');
+            resistButton.classList.add('hidden');
+            nextWeekButton.classList.remove('hidden');
+            
+            let dialog = getRandomElement(fridayDialogues.resistReaction);
+            fridayAvatar.textContent = '😒'; // Disappointed Friday
+            typeWriterEffect(fridayDialogElem, dialog);
+
+            messageArea.innerHTML = ''; // Clear previous messages
+            const successDiv = document.createElement('div');
+            successDiv.textContent = "Well done! Production is stable. You've earned a stress-free weekend! You get the 'Safe Weekend Badge' (for this week).";
+            messageArea.appendChild(successDiv);
+            messageArea.classList.add('success-message');
+            
+            educationalTipsElem.classList.add('hidden'); // No tips needed for success
+
+            updateScore(10); // Reward for resisting
+        }
+
+        function advanceDay() {
+            currentDayIndex++;
+            if (currentDayIndex < daysOfWeek.length -1) { // Not Friday yet
+                dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}: Working hard... ${daysOfWeek.length - 1 - currentDayIndex} day(s) until Friday!`;
+                setTimeout(advanceDay, 1500); // Simulate passage of time
+            } else { // It's Friday!
+                dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}! The Big Decision!`;
+                fridayArea.classList.remove('hidden');
+                deployButton.classList.remove('hidden');
+                resistButton.classList.remove('hidden');
+                displayFriday();
+            }
+        }
+
+        function resetForNewWeek() {
+            document.body.classList.remove('chaos-mode');
+            messageArea.innerHTML = '';
+            messageArea.classList.remove('success-message');
+            educationalTipsElem.classList.add('hidden');
+            fridayArea.classList.add('hidden');
+            deployButton.classList.add('hidden');
+            resistButton.classList.add('hidden');
+            nextWeekButton.classList.add('hidden');
+            fridayAvatar.textContent = '😎'; // Reset avatar
+        }
+
+        function startGame() {
+            startScreen.classList.add('hidden');
+            gameScreen.classList.remove('hidden');
+            
+            resetForNewWeek();
+
+            currentDayIndex = 0;
+            dayDisplay.textContent = `${daysOfWeek[currentDayIndex]}: The week begins. Coffee!`;
+            setTimeout(advanceDay, 1500); // Start the week progression
+        }
+
+        // Initial setup
+        // (startGame() will be called by button)
+    </script>
+</body>
+</html>
